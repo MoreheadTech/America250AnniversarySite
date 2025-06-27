@@ -10,36 +10,55 @@
     color: lime;
     font-family: monospace, monospace;
     white-space: pre;
-    padding: 2rem;
-    max-width: 900px;
-    margin: auto;
-    text-align: center;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #container {
+    display: flex;
+    max-width: 1000px;
+    width: 90vw;
+    align-items: center;
+    gap: 1rem;
+  }
+  #sideFireworkLeft, #sideFireworkRight {
+    font-size: 2.5rem;
+    line-height: 1;
+    width: 6rem;
+    height: 12rem;
+    white-space: pre;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #mainContent {
+    max-width: 700px;
   }
   #flagArt {
     font-size: 0.9rem;
     line-height: 1.1;
     margin-bottom: 1rem;
+    text-align: center;
   }
   #anthemText {
-    margin-top: 1rem;
     font-size: 1rem;
     white-space: pre-wrap;
-  }
-  #firework {
-    font-size: 3rem;
-    line-height: 1;
-    height: 7rem;
     text-align: center;
-    margin: 1rem 0;
   }
   audio {
-    display: none; /* Hide audio controls */
+    display: none;
   }
 </style>
 </head>
 <body>
 
-<div id="flagArt">
+<div id="container">
+  <div id="sideFireworkLeft"></div>
+
+  <div id="mainContent">
+    <div id="flagArt">
 |* * * * * * * * * * OOOOOOOOOOOOOOOOOOOOOOOOO|<br>
 | * * * * * * * * *  :::::::::::::::::::::::::|<br>
 |* * * * * * * * * * OOOOOOOOOOOOOOOOOOOOOOOOO|<br>
@@ -53,11 +72,9 @@
 |OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO|<br>
 |:::::::::::::::::::::::::::::::::::::::::::::|<br>
 |OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO|
-</div>
+    </div>
 
-<div id="firework"></div>
-
-<div id="anthemText">
+    <div id="anthemText">
 O say can you see, by the dawn’s early light,  
 What so proudly we hail’d at the twilight’s last gleaming,  
 Whose broad stripes and bright stars through the perilous fight  
@@ -66,50 +83,60 @@ And the rocket’s red glare, the bombs bursting in air,
 Gave proof through the night that our flag was still there,  
 O say does that star-spangled banner yet wave  
 O’er the land of the free and the home of the brave?
-</div>
+    </div>
 
-<audio id="anthemAudio" autoplay loop muted playsinline>
-  <source src="anthem.mp3" type="audio/mpeg" />
-  Your browser does not support the audio element.
-</audio>
+    <audio id="anthemAudio" autoplay loop muted playsinline>
+      <source src="anthem.mp3" type="audio/mpeg" />
+      Your browser does not support the audio element.
+    </audio>
+  </div>
+
+  <div id="sideFireworkRight"></div>
+</div>
 
 <script>
 const frames = [
   `
-     .
-    ...
-   .....
-    ...
-     .
+    .
+   ...
+  .....
+   ...
+    .
   `,
   `
-     *
-   *   *
+    *
+  *   *
  *   *   *
-   *   *
-     *
+  *   *
+    *
   `,
   `
-      .
-     .'.
-    .'.'.
-     '.'  
-      '
+     .
+    .'.
+   .'.'.
+    '.'
+     '
   `
 ];
 
-const fireworkEl = document.getElementById('firework');
-let frameIndex = 0;
+// Animate fireworks on both sides independently
+const leftFireworkEl = document.getElementById('sideFireworkLeft');
+const rightFireworkEl = document.getElementById('sideFireworkRight');
 
-function animateFirework() {
-  fireworkEl.textContent = frames[frameIndex];
-  frameIndex = (frameIndex + 1) % frames.length;
+let leftIndex = 0;
+let rightIndex = 1;
+
+function animateFireworks() {
+  leftFireworkEl.textContent = frames[leftIndex];
+  rightFireworkEl.textContent = frames[rightIndex];
+  leftIndex = (leftIndex + 1) % frames.length;
+  rightIndex = (rightIndex + 1) % frames.length;
 }
 
-setInterval(animateFirework, 400);
-animateFirework();
+setInterval(animateFireworks, 400);
+animateFireworks();
 
-// Unmute on user interaction
+// Unmute audio on user interaction (required by browsers)
 document.body.addEventListener('click', () => {
   const audio = document.getElementById('anthemAudio');
   audio.muted = false;
