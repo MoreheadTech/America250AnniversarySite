@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>USA Terminal Broadcast</title>
+<style>
+  body {
+    background-color: black;
+    color: lime;
+    font-family: monospace, monospace;
+    white-space: pre;
+    padding: 2rem;
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+  }
+  #content {
+    display: none;
+  }
+  #waitMessage {
+    font-size: 1.5rem;
+    margin-top: 3rem;
+  }
+  #flagArt {
+    font-size: 0.9rem;
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+  #anthemText {
+    margin-top: 1rem;
+    font-size: 1rem;
+    white-space: pre-wrap;
+  }
+  audio {
+    display: none; /* Hide audio controls */
+  }
+</style>
+</head>
+<body>
+
+<div id="waitMessage">
+  The broadcast will start on July 4, 2026, 12:00 PM ET.<br>
+  Please come back then!
+</div>
+
+<div id="content">
+  <div id="flagArt">
+|* * * * * * * * * * OOOOOOOOOOOOOOOOOOOOOOOOO|<br>
+| * * * * * * * * *  :::::::::::::::::::::::::|<br>
+|* * * * * * * * * * OOOOOOOOOOOOOOOOOOOOOOOOO|<br>
+| * * * * * * * * *  :::::::::::::::::::::::::|<br>
+|* * * * * * * * * * OOOOOOOOOOOOOOOOOOOOOOOOO|<br>
+| * * * * * * * * *  ::::::::::::::::::::;::::|<br>
+|* * * * * * * * * * OOOOOOOOOOOOOOOOOOOOOOOOO|<br>
+|:::::::::::::::::::::::::::::::::::::::::::::|<br>
+|OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO|<br>
+|:::::::::::::::::::::::::::::::::::::::::::::|<br>
+|OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO|<br>
+|:::::::::::::::::::::::::::::::::::::::::::::|<br>
+|OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO|
+  </div>
+
+  <div id="anthemText">
+O say can you see, by the dawn’s early light,  
+What so proudly we hail’d at the twilight’s last gleaming,  
+Whose broad stripes and bright stars through the perilous fight  
+O’er the ramparts we watch’d were so gallantly streaming?  
+And the rocket’s red glare, the bombs bursting in air,  
+Gave proof through the night that our flag was still there,  
+O say does that star-spangled banner yet wave  
+O’er the land of the free and the home of the brave?
+  </div>
+
+  <audio id="anthemAudio" autoplay loop muted playsinline>
+    <source src="anthem.mp3" type="audio/mpeg" />
+    Your browser does not support the audio element.
+  </audio>
+</div>
+
+<script>
+  // Target time in ET (UTC-4 during daylight saving)
+  // July 4, 2026, 12:00 PM ET == July 4, 2026 16:00 UTC (4 PM UTC)
+  const targetUTC = new Date(Date.UTC(2026, 6, 4, 16, 0, 0)); // Months zero-based (6 = July)
+
+  function checkTime() {
+    const now = new Date();
+    if (now >= targetUTC) {
+      // Show content and hide wait message
+      document.getElementById('content').style.display = 'block';
+      document.getElementById('waitMessage').style.display = 'none';
+
+      // Unmute and play audio on user interaction to comply with browser policies
+      const audio = document.getElementById('anthemAudio');
+      document.body.addEventListener('click', () => {
+        audio.muted = false;
+        audio.play();
+      }, { once: true });
+
+      // Stop checking
+      clearInterval(timer);
+    }
+  }
+
+  checkTime();
+  const timer = setInterval(checkTime, 1000);
+</script>
+
+</body>
+</html>
