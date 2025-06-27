@@ -1,61 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>USA Terminal Broadcast</title>
-<style>
-  body {
-    background-color: black;
-    color: lime;
-    font-family: monospace, monospace;
-    white-space: pre;
-    margin: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  #container {
-    display: flex;
-    max-width: 1000px;
-    width: 90vw;
-    align-items: center;
-    gap: 1rem;
-  }
-  #sideFireworkLeft, #sideFireworkRight {
-    font-size: 2.5rem;
-    line-height: 1;
-    width: 6rem;
-    height: 12rem;
-    white-space: pre;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  #mainContent {
-    max-width: 700px;
-  }
-  #flagArt {
-    font-size: 0.9rem;
-    line-height: 1.1;
-    margin-bottom: 1rem;
-    text-align: center;
-  }
-  #anthemText {
-    font-size: 1rem;
-    white-space: pre-wrap;
-    text-align: center;
-  }
-  audio {
-    display: none;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>USA Terminal Broadcast</title>
+  <style>
+    body {
+      background-color: black;
+      color: lime;
+      font-family: monospace, monospace;
+      white-space: pre;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #container {
+      display: flex;
+      max-width: 1000px;
+      width: 90vw;
+      align-items: center;
+      gap: 1rem;
+    }
+    .firework-container {
+      position: relative;
+      width: 6rem;
+      height: 15rem;
+      overflow: hidden;
+    }
+    .firework {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      font-size: 2.5rem;
+      line-height: 1;
+      transition: transform 0.4s ease;
+    }
+    #mainContent {
+      max-width: 700px;
+    }
+    #flagArt {
+      font-size: 0.9rem;
+      line-height: 1.1;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    #anthemText {
+      font-size: 1rem;
+      white-space: pre-wrap;
+      text-align: center;
+    }
+    audio {
+      display: none;
+    }
+  </style>
 </head>
 <body>
 
 <div id="container">
-  <div id="sideFireworkLeft"></div>
+  <div class="firework-container">
+    <div id="leftFirework" class="firework"></div>
+  </div>
 
   <div id="mainContent">
     <div id="flagArt">
@@ -91,7 +97,9 @@ O’er the land of the free and the home of the brave?
     </audio>
   </div>
 
-  <div id="sideFireworkRight"></div>
+  <div class="firework-container">
+    <div id="rightFirework" class="firework"></div>
+  </div>
 </div>
 
 <script>
@@ -119,24 +127,36 @@ const frames = [
   `
 ];
 
-// Animate fireworks on both sides independently
-const leftFireworkEl = document.getElementById('sideFireworkLeft');
-const rightFireworkEl = document.getElementById('sideFireworkRight');
+const leftEl = document.getElementById('leftFirework');
+const rightEl = document.getElementById('rightFirework');
 
-let leftIndex = 0;
-let rightIndex = 1;
+let frame = 0;
+let yLeft = 0;
+let yRight = 0;
+const maxHeight = 12; // how far up it can go (in rem)
 
-function animateFireworks() {
-  leftFireworkEl.textContent = frames[leftIndex];
-  rightFireworkEl.textContent = frames[rightIndex];
-  leftIndex = (leftIndex + 1) % frames.length;
-  rightIndex = (rightIndex + 1) % frames.length;
+function animateFirework(el, yOffset, index) {
+  el.textContent = frames[index];
+  el.style.transform = `translateY(-${yOffset}rem)`;
 }
 
-setInterval(animateFireworks, 400);
-animateFireworks();
+function loop() {
+  frame = (frame + 1) % frames.length;
 
-// Unmute audio on user interaction (required by browsers)
+  yLeft += 1;
+  yRight += 1;
+
+  if (yLeft > maxHeight) yLeft = 0;
+  if (yRight > maxHeight) yRight = 0;
+
+  animateFirework(leftEl, yLeft, frame);
+  animateFirework(rightEl, yRight, (frame + 1) % frames.length);
+}
+
+setInterval(loop, 400);
+loop();
+
+// Enable sound on click
 document.body.addEventListener('click', () => {
   const audio = document.getElementById('anthemAudio');
   audio.muted = false;
